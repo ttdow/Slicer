@@ -58,11 +58,13 @@ Shader "Matrix Shader"
 				triUV.y = pos.xz; // Use X and Z for UVs when seen from the Y-axis
 				triUV.z = pos.xy; // Use X and Y for UVs when seen from the Z-axis
 
-				triUV.x.y = triUV.x.y + _Time.y * 0.1f;
-				triUV.y.y = triUV.y.y + _Time.y * 0.1f;
-				triUV.z.y = triUV.z.y + _Time.y * 0.1f;
+				// Animate along V-axis of UV
+				triUV.x.y = triUV.x.y - _Time.y * 0.1f; 
+				triUV.y.y = triUV.y.y - _Time.y * 0.1f;
+				triUV.z.y = triUV.z.y - _Time.y * 0.1f;
 
-				triUV.x = triUV.x * _MainTex_ST.xy;
+				// Scale and tile texture
+				triUV.x = triUV.x * _MainTex_ST.xy; 
 				triUV.y = triUV.y * _MainTex_ST.xy;
 				triUV.z = triUV.z * _MainTex_ST.xy;
 
@@ -99,15 +101,18 @@ Shader "Matrix Shader"
 
 				TriplanarUV triUV = GetTriplanarUV(i.worldPosition);
 
-				float3 colorX = tex2D(_MainTex, triUV.x).rgb;
-				float3 colorY = tex2D(_MainTex, triUV.y).rgb;
-				float3 colorZ = tex2D(_MainTex, triUV.z).rgb;
+				float3 texX = tex2D(_MainTex, triUV.x).rgb;
+				float3 texY = tex2D(_MainTex, triUV.y).rgb;
+				float3 texZ = tex2D(_MainTex, triUV.z).rgb;
 
 				float3 triW = GetTriplanarWeights(i.normal);
 
-				float3 totColor = colorX * triW.x + colorY * triW.y + colorZ * triW.z;
+				float3 combinedTex = texX * triW.x + texY * triW.y + texZ * triW.z;
+				float4 tex = float4(combinedTex, 1.0f);
 
-				return float4(totColor, 1.0f);
+				float4 finalColor = tex * _Tint;
+
+				return finalColor;
 			}
 
 			ENDCG
