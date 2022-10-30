@@ -58,10 +58,14 @@ Shader "Matrix Shader"
 				triUV.y = pos.xz; // Use X and Z for UVs when seen from the Y-axis
 				triUV.z = pos.xy; // Use X and Y for UVs when seen from the Z-axis
 
+				triUV.x.y = triUV.x.y + _Time.y * 0.1f;
+				triUV.y.y = triUV.y.y + _Time.y * 0.1f;
+				triUV.z.y = triUV.z.y + _Time.y * 0.1f;
+
 				triUV.x = triUV.x * _MainTex_ST.xy;
 				triUV.y = triUV.y * _MainTex_ST.xy;
 				triUV.z = triUV.z * _MainTex_ST.xy;
-				
+
 				return triUV;
 			}
 
@@ -92,8 +96,6 @@ Shader "Matrix Shader"
 			float4 MyFragmentProgram(Interpolators i) : SV_TARGET
 			{
 				UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
-
-				//float3 worldPos = mul(unity_ObjectToWorld, i.position);
 
 				TriplanarUV triUV = GetTriplanarUV(i.worldPosition);
 
