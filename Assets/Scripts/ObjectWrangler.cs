@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Small script to prevent objects from falling through the world
 public class ObjectWrangler : MonoBehaviour
 {
-    public Vector3 initialPos;
-
     public Rigidbody body;
 
     // Start is called before the first frame update
     void Start()
     {
-        initialPos = transform.position;
-
         body = GetComponent<Rigidbody>();
     }
 
@@ -21,7 +18,7 @@ public class ObjectWrangler : MonoBehaviour
     {
         if (transform.position.y < -2.0f)
         {
-            transform.position = initialPos;
+            transform.position = new Vector3(Random.Range(-9.0f, 9.0f), 2.0f, Random.Range(-9.0f, 9.0f));
 
             body.velocity = Vector3.zero;
         }
