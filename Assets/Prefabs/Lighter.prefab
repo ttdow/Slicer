@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 5057965377499137585}
   - component: {fileID: 1990642738973222005}
   - component: {fileID: 8776291461666015635}
+  - component: {fileID: -6678685395225622818}
   m_Layer: 0
   m_Name: Lighter
   m_TagString: Untagged
@@ -301,6 +302,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTetherWhenManipulating: 0
   IsBoundsHandles: 0
+--- !u!114 &-6678685395225622818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9039229989890191451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eac3ad2f0ad3abd4eb9061d8457dad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialPos: {x: 0, y: 0, z: 0}
+  body: {fileID: 0}
 --- !u!1 &9039229989890191453
 GameObject:
   m_ObjectHideFlags: 0
