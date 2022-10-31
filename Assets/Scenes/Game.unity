@@ -1454,6 +1454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 2059143134}
+  player: {fileID: 1374912150}
   shell: {fileID: 9151075288432930707}
   suspect: {fileID: 0}
   weapon: {fileID: 0}

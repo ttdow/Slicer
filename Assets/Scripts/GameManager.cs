@@ -5,11 +5,13 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.SpatialAwareness;
 
-public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
+public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedRealityTouchHandler
 {
     #region Fields
 
     public AudioSource audioSource;
+
+    public Camera player;
 
     public GameObject shell;
     public GameObject suspect;
@@ -65,9 +67,31 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 StartGame();
                 break;
 
+            case "hello":
+                SayHello();
+                break;
+
             default:
                 break;
         }
+    }
+
+    #endregion
+
+    #region TouchHandler Callbacks
+    public void OnTouchStarted(HandTrackingInputEventData eventData)
+    {
+        Debug.Log("Touched!");
+    }
+
+    public void OnTouchCompleted(HandTrackingInputEventData eventData)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnTouchUpdated(HandTrackingInputEventData eventData)
+    {
+        throw new System.NotImplementedException();
     }
 
     #endregion
@@ -87,6 +111,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     // Update is called once per frame
     void Update()
     {
+        SayHello();
     }
 
     #endregion
@@ -159,6 +184,22 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             case 2:
                 clue = GameObject.Instantiate(glovePrefab, cluePos, Quaternion.identity);
                 break;
+        }
+    }
+
+    public void SayHello()
+    {
+        if(Vector3.Distance(player.transform.position,  white.transform.position) < 2.0f)
+        {
+            white.GetComponent<AudioSource>().Play();
+        }
+        else if(Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
+        {
+            mustard.GetComponent<AudioSource>().Play();
+        }
+        else if(Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
+        {
+            peacock.GetComponent<AudioSource>().Play();
         }
     }
 
