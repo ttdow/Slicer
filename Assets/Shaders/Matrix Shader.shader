@@ -87,8 +87,8 @@ Shader "Matrix Shader"
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(i);  // Tells GPU which eye to render to
 
 				i.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				i.position = UnityObjectToClipPos(v.position);
 				i.worldPosition = v.position;
+				i.position = UnityObjectToClipPos(v.position);
 				i.normal = v.normal;
 
 				return i;
@@ -111,6 +111,25 @@ Shader "Matrix Shader"
 				float4 tex = float4(combinedTex, 1.0f);
 
 				float4 finalColor = tex * _Tint;
+
+				// Apply "random" bright spot effect
+				float radius = 5.0f;
+				float rho = _Time.w * 0.2f;
+				float theta = _Time.w * 0.2f;
+				float sphereX = radius * sin(rho) * cos(theta);
+				float sphereY = radius * sin(rho) * sin(theta);
+				float sphereZ = radius * cos(rho);
+				float4 spherePos = float4(sphereX, sphereY, sphereZ, 1.0f);
+
+				float4x4 mvpInverse = unity_ObjectToWorld;
+				float4 worldPos = mul(mvpInverse, i.worldPosition);
+				float d = distance(worldPos, spherePos);
+				
+				float linearAttenuation = 0.35f;
+				float quadraticAttenuation = 0.9f;
+
+				float attenuation = 1.0f / (1.0f + linearAttenuation * d + quadraticAttenuation * d * d);
+				finalColor += float4(1.0f, 1.0f, 1.0f, 1.0f) * attenuation;
 
 				return finalColor;
 			}
