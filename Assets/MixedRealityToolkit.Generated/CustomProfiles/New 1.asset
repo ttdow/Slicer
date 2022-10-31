@@ -17,7 +17,7 @@ MonoBehaviour:
   palmPrefab: {fileID: 0}
   fingertipPrefab: {fileID: 0}
   systemHandMeshMaterial: {fileID: 2100000, guid: 45082b98567b3d44ca3bdbe39f46041a, type: 2}
-  riggedHandMeshMaterial: {fileID: 2100000, guid: a1e40b33070aca74a8f80b6f529e786a, type: 2}
+  riggedHandMeshMaterial: {fileID: 2100000, guid: ac76b5ef058c3e644bafccb2ae5b4aab, type: 2}
   handMeshPrefab: {fileID: 1887883006053652, guid: a86f479797fea8f4189f924b3b6ad979, type: 3}
   handMeshVisualizationModes: -1
   handJointVisualizationModes: 0
