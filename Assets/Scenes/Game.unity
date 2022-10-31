@@ -1456,6 +1456,8 @@ MonoBehaviour:
   audioSource: {fileID: 2059143134}
   player: {fileID: 1374912150}
   shell: {fileID: 9151075288432930707}
+  shellText: {fileID: 7199041121552525761}
+  shellInput: {fileID: 3773139067488772804}
   suspect: {fileID: 0}
   weapon: {fileID: 0}
   clue: {fileID: 0}
@@ -4292,13 +4294,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: In the year 3022 SOCIETY has moved beyond the physical world and into the
-    cloud. People live as immortals in the digital world with nothing to fear. You
-    are part of the Slicers, cybersecurity experts who investigate crimes in this
-    world. For the first time in the history of your organization you've been tasked
-    with solving a murder. Not only did someone murder this individual, but every
-    copy of them on the network. Who could have perpetrated this heinous crime? Question
-    the suspects, search your area for clues, and find the killer!
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   m_sharedMaterial: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
