@@ -403,9 +403,9 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             shell.SetActive(true);
             shell.transform.position = (player.transform.position + partner.transform.position) / 2.0f;
 
-            shellText.text = "Hello, I'm " + name + ".\n";
-            shellText.text += "What do you want officer?\n";
-            shellInputText.text = "Try saying or typing a KEYWORD representing a clue or a weapon.\n";
+            shellText.text = "Hello, I'm " + name + ".\n\n";
+            shellText.text += "What can I help you with, officer? (try typing or saying a KEYWORD)\n";
+            shellInputText.text = "";
         }
     }
 
@@ -419,6 +419,8 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     // Controls the logic behind asking suspects about objects
     public void QuestionSuspect(string keyword)
     {
+        keyword.ToLower();
+
         if (conversationStarted)
         {
             GameObject conversationPartner = null;
