@@ -136,17 +136,18 @@ Shader "Matrix Shader"
 				float4 ambient = float4(0.2f, 0.2f, 0.2f, 0.2f);
 
 				// Diffuse light using camera view instead of light source
-				//float3 cameraPos = _WorldSpaceCameraPos;
-				//float3 cameraDir = -1.0f * normalize(worldPos.xyz - cameraPos);
+				float3 cameraPos = _WorldSpaceCameraPos;
+				float3 cameraDir = -1.0f * normalize(worldPos.xyz - cameraPos);
 
 				//float4 cameraForward = mul(unity_CameraToWorld, float4(0.0f, 0.0f, 1.0f, 1.0f));
 				//float3 cameraDir = cameraForward.xyz;
 				
-				//float diff = max(dot(i.normal, cameraPos), 0.01f);
-				//float4 diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f) * diff;
-				float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+				float diff = dot(i.normal, cameraDir) / 6.29f;
+				float4 diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f) * diff;
+				//float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 				
-				return (ambient + diffuse + spotLight) * finalColor;
+				return (ambient + diffuse) * finalColor;
+				//return diffuse * finalColor;
 			}
 
 			ENDCG

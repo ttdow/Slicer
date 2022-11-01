@@ -163,9 +163,19 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 break;
         }
 
-        if (!shell.activeInHierarchy)
+        if (conversationStarted)
         {
-            conversationStarted = false;
+            if (Vector3.Distance(player.transform.position, white.transform.position) > 2.0f ||
+                Vector3.Distance(player.transform.position, mustard.transform.position) > 2.0f ||
+                Vector3.Distance(player.transform.position, peacock.transform.position) > 2.0f)
+            {
+                shell.SetActive(false);
+            }
+
+            if (!shell.activeInHierarchy)
+            {
+                conversationStarted = false;
+            }
         }
     }
 
@@ -361,6 +371,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     public void SayHello()
     {
         string name = "";
+        GameObject partner = null;
 
         if (!conversationStarted)
         {
@@ -369,29 +380,32 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 white.GetComponent<AudioSource>().Play();
                 conversationStarted = true;
                 name += "Ms. White";
+                partner = white;
             }
             else if (Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
             {
                 mustard.GetComponent<AudioSource>().Play();
                 conversationStarted = true;
                 name += "Col. Mustard";
+                partner = mustard;
             }
             else if (Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
             {
                 peacock.GetComponent<AudioSource>().Play();
                 conversationStarted = true;
                 name += "Mrs. Peacock";
+                partner = peacock;
             }
         }
 
         if (conversationStarted)
         {
             shell.SetActive(true);
-            shell.transform.position = player.transform.position + new Vector3(0.0f, 0.0f, 0.5f);
+            shell.transform.position = player.transform.rotation.(player.transform.position + partner.transform.position) / 2.0f;
 
             shellText.text = "Hello, I'm " + name + ".\n";
-            shellText.text += "Can I help you officer?\n";
-            shellInputText.text = "Try asking about a clue or a weapon.\n";
+            shellText.text += "What do you want officer?\n";
+            shellInputText.text = "Try saying or typing a KEYWORD representing a clue or a weapon.\n";
         }
     }
 
