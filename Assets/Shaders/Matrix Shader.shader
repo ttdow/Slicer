@@ -59,9 +59,9 @@ Shader "Matrix Shader"
 				triUV.z = pos.xy; // Use X and Y for UVs when seen from the Z-axis
 
 				// Animate along V-axis of UV
-				triUV.x.y = triUV.x.y - _Time.y * 0.1f; 
-				triUV.y.y = triUV.y.y - _Time.y * 0.1f;
-				triUV.z.y = triUV.z.y - _Time.y * 0.1f;
+				triUV.x.y = triUV.x.y + _Time.y * 0.2f; 
+				triUV.y.y = triUV.y.y + _Time.y * 0.2f;
+				triUV.z.y = triUV.z.y + _Time.y * 0.2f;
 
 				// Scale and tile texture
 				triUV.x = triUV.x * _MainTex_ST.xy; 
@@ -146,7 +146,8 @@ Shader "Matrix Shader"
 				float4 diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f) * diff;
 				//float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 				
-				return (ambient + diffuse) * finalColor;
+				return finalColor;
+				//return (ambient + diffuse) * finalColor;
 				//return diffuse * finalColor;
 			}
 

@@ -214,12 +214,12 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     public void StartGame()
     {
         shellInput.SetActive(true);
-        body.GetComponent<Rigidbody>().useGravity = false;
-        white.GetComponent<Rigidbody>().useGravity = false;
-        mustard.GetComponent<Rigidbody>().useGravity = false;
-        peacock.GetComponent<Rigidbody>().useGravity = false;
-        clue.GetComponent<Rigidbody>().useGravity = false;
-        weapon.GetComponent<Rigidbody>().useGravity = false;
+        //body.GetComponent<Rigidbody>().useGravity = false;
+        //white.GetComponent<Rigidbody>().useGravity = false;
+        //mustard.GetComponent<Rigidbody>().useGravity = false;
+        //peacock.GetComponent<Rigidbody>().useGravity = false;
+        //clue.GetComponent<Rigidbody>().useGravity = false;
+        //weapon.GetComponent<Rigidbody>().useGravity = false;
 
         shellText.text = "In the year 3022 SOCIETY has moved beyond the physical world and into the cloud. People live as immortals in the digital world with nothing to fear. You are part of the Slicers, cybersecurity experts who investigate crimes in this world. For the first time in the history of your organization you've been tasked with solving a murder. Not only did someone murder this individual, but every copy of them on the network. Who could have perpetrated this heinous crime? Question the suspects, search your area for clues, and find the killer!";
     }

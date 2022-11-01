@@ -1277,7 +1277,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374912144}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
   m_Name: 
@@ -1454,6 +1454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 2059143134}
+  victory: {fileID: 8300000, guid: af24a7e23701a194abb1113095af2bb3, type: 3}
   player: {fileID: 1374912150}
   shell: {fileID: 9151075288432930707}
   shellText: {fileID: 7199041121552525761}
@@ -1463,13 +1464,14 @@ MonoBehaviour:
   clueFound: 0
   conversationStarted: 0
   playerGuess: 0
+  caseClosed: 0
   murderer: {fileID: 0}
   weapon: {fileID: 0}
   clue: {fileID: 0}
   bodyPrefab: {fileID: 2408823240513908039, guid: 3aad5b563fa9b174cb3dc338a8f77451, type: 3}
-  mustardPrefab: {fileID: 5732349777958519423, guid: 88d0ca1dc3a776345aca32b30331c4c5, type: 3}
-  whitePrefab: {fileID: 1359817487507759592, guid: 50611772e19a8ad43b81f4345f7f4e21, type: 3}
-  peacockPrefab: {fileID: 3208524330730044166, guid: aa486a0d6d2000b418c783bd60a72726, type: 3}
+  mustardPrefab: {fileID: 2289174779719883787, guid: bd5f70d8b5698224e9456469fd1e9b19, type: 3}
+  whitePrefab: {fileID: 4160976032302790742, guid: 50611772e19a8ad43b81f4345f7f4e21, type: 3}
+  peacockPrefab: {fileID: 7455292233738158525, guid: aa486a0d6d2000b418c783bd60a72726, type: 3}
   bookPrefab: {fileID: 3544631578231295962, guid: dd9289f7cf3c2e24c847e1916e267d8e, type: 3}
   lighterPrefab: {fileID: 9039229989890191451, guid: 7120ed3b1f1b36449bd1ec7de6759ae5, type: 3}
   glovePrefab: {fileID: 6435257004946503300, guid: 907fd7ff8aa5e9048a1fea257c50f574, type: 3}
