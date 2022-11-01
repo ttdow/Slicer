@@ -113,25 +113,40 @@ Shader "Matrix Shader"
 				float4 finalColor = tex * _Tint;
 
 				// Apply "random" bright spot effect
-				float radius = 5.0f;
-				float rho = _Time.w * 0.2f;
-				float theta = _Time.w * 0.2f;
+				float radius = 4.5f;
+				float rho = _Time.w * 0.3f;
+				float theta = _Time.w * 0.3f;
 				float sphereX = radius * sin(rho) * cos(theta);
-				float sphereY = radius * sin(rho) * sin(theta);
-				float sphereZ = radius * cos(rho);
+				float sphereY = radius * sin(rho) * sin(theta) / 2.0f;
+				float sphereZ = radius * cos(rho) - 5.0f;
 				float4 spherePos = float4(sphereX, sphereY, sphereZ, 1.0f);
 
 				float4x4 mvpInverse = unity_ObjectToWorld;
 				float4 worldPos = mul(mvpInverse, i.worldPosition);
 				float d = distance(worldPos, spherePos);
 				
-				float linearAttenuation = 0.35f;
-				float quadraticAttenuation = 0.9f;
+				// Set values
+				float linearAttenuation = 0.7f;
+				float quadraticAttenuation = 1.8f;
 
 				float attenuation = 1.0f / (1.0f + linearAttenuation * d + quadraticAttenuation * d * d);
-				finalColor += float4(1.0f, 1.0f, 1.0f, 1.0f) * attenuation;
+				float4 spotLight = float4(1.0f, 1.0f, 1.0f, 1.0f) * attenuation;
 
-				return finalColor;
+				// Ambient light
+				float4 ambient = float4(0.2f, 0.2f, 0.2f, 0.2f);
+
+				// Diffuse light using camera view instead of light source
+				//float3 cameraPos = _WorldSpaceCameraPos;
+				//float3 cameraDir = -1.0f * normalize(worldPos.xyz - cameraPos);
+
+				//float4 cameraForward = mul(unity_CameraToWorld, float4(0.0f, 0.0f, 1.0f, 1.0f));
+				//float3 cameraDir = cameraForward.xyz;
+				
+				//float diff = max(dot(i.normal, cameraPos), 0.01f);
+				//float4 diffuse = float4(1.0f, 1.0f, 1.0f, 1.0f) * diff;
+				float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+				
+				return (ambient + diffuse + spotLight) * finalColor;
 			}
 
 			ENDCG

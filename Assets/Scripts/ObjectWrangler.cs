@@ -7,10 +7,14 @@ public class ObjectWrangler : MonoBehaviour
 {
     public Rigidbody body;
 
+    public GameManager manager;
+
     // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody>();
+
+        manager = GameObject.FindGameObjectWithTag("manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -22,5 +26,10 @@ public class ObjectWrangler : MonoBehaviour
 
             body.velocity = Vector3.zero;
         }
+    }
+
+    public void ObjectFound()
+    {
+        manager.ObjectFound(gameObject.tag);
     }
 }

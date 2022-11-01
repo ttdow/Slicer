@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.SpatialAwareness;
 using TMPro;
-using static UnityEngine.ParticleSystem;
-using System.Net.Sockets;
-using UnityEditor.Experimental.GraphView;
+using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedRealityTouchHandler
 {
@@ -22,8 +18,14 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
     public GameObject shell;
     public TextMeshProUGUI shellText;
     public GameObject shellInput;
+    public MRTKUGUIInputField shellInputText;
 
-    public GameObject suspect;
+    public bool weaponFound;
+    public bool clueFound;
+    public bool conversationStarted;
+    public bool playerGuess;
+
+    public GameObject murderer;
     public GameObject weapon;
     public GameObject clue;
 
@@ -80,6 +82,34 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
                 SayHello();
                 break;
 
+            case "knife":
+                if (weaponFound) QuestionSuspect("knife");
+                break;
+
+            case "hammer":
+                if (weaponFound) QuestionSuspect("hammer");
+                break;
+
+            case "wrench":
+                if (weaponFound) QuestionSuspect("wrench");
+                break;
+
+            case "book":
+                if (clueFound) QuestionSuspect("book");
+                break;
+
+            case "lighter":
+                if (clueFound) QuestionSuspect("lighter");
+                break;
+
+            case "glove":
+                if (clueFound) QuestionSuspect("glove");
+                break;
+
+            case "accuse":
+                if (clueFound && weaponFound) QuestionSuspect("accuse");
+                break;
+
             default:
                 break;
         }
@@ -118,6 +148,10 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
 
         // Set the initial game state
         gameState = 0;
+        weaponFound = false;
+        clueFound = false;
+        conversationStarted = false;
+        playerGuess = false;
 
         SetupGame();
     }
@@ -142,8 +176,14 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
                 break;
 
             case 2:
-                // YOU WIN
+                audioSource.Stop();
+                Debug.Log("YOU WIN!");
                 break;
+        }
+
+        if (!shell.activeInHierarchy)
+        {
+            conversationStarted = false;
         }
     }
 
@@ -186,17 +226,20 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         mustard = GameObject.Instantiate(mustardPrefab, mustardPos, Quaternion.identity);
         peacock = GameObject.Instantiate(peacockPrefab, peacockPos, Quaternion.identity);
 
+        // Mr. Body is dead.
+        body.transform.Rotate(new Vector3(-90.0f, 0.0f, 0.0f));
+
         // Select whodunnit
         switch(suspectChoice)
         {
             case 0:
-                suspect = white;
+                murderer = white;
                 break;
             case 1:
-                suspect = mustard;
+                murderer = mustard;
                 break;
             case 2:
-                suspect = peacock;
+                murderer = peacock;
                 break;
         }
 
@@ -286,25 +329,205 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
-    public void SayHello()
+    public void ObjectFound(string tag)
     {
-        if(Vector3.Distance(player.transform.position,  white.transform.position) < 2.0f)
+        Debug.Log("A " + tag + " was found!");
+
+        switch(tag)
         {
-            white.GetComponent<AudioSource>().Play();
-        }
-        else if(Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
-        {
-            mustard.GetComponent<AudioSource>().Play();
-        }
-        else if(Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
-        {
-            peacock.GetComponent<AudioSource>().Play();
+            case "weapon":
+                weaponFound = true;
+                break;
+
+            case "clue":
+                clueFound = true;
+                break;
+
+            case "mustard":
+                SayHello();
+                break;
+
+            case "white":
+                SayHello();
+                break;
+
+            case "peacock":
+                SayHello();
+                break;
+
+            case "body":
+                Debug.Log("Yep. It's a dead body.");
+                break;
+
+            default:
+                break;
         }
     }
 
-    public void Accuse()
+    public void SayHello()
     {
-        bool playerGuess = false;
+        string name = "";
+
+        if (!conversationStarted)
+        {
+            if (Vector3.Distance(player.transform.position, white.transform.position) < 2.0f)
+            {
+                white.GetComponent<AudioSource>().Play();
+                conversationStarted = true;
+                name += "Ms. White";
+            }
+            else if (Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
+            {
+                mustard.GetComponent<AudioSource>().Play();
+                conversationStarted = true;
+                name += "Col. Mustard";
+            }
+            else if (Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
+            {
+                peacock.GetComponent<AudioSource>().Play();
+                conversationStarted = true;
+                name += "Mrs. Peacock";
+            }
+        }
+
+        if (conversationStarted)
+        {
+            shell.SetActive(true);
+            shell.transform.position = player.transform.position + new Vector3(0.0f, 0.0f, 0.5f);
+
+            shellText.text = "Hello, I'm " + name + ".\n";
+            shellText.text += "Can I help you officer?\n";
+            shellInputText.text = "Try asking about a clue or a weapon.\n";
+        }
+    }
+
+    public void QuestionSuspect()
+    {
+        string keyword = shellInputText.text;
+        QuestionSuspect(keyword);
+    }
+
+    public void QuestionSuspect(string keyword)
+    {
+        if (conversationStarted)
+        {
+            GameObject conversationPartner = null;
+
+            if (Vector3.Distance(player.transform.position, white.transform.position) < 2.0f)
+            {
+                conversationPartner = white;
+            }
+            else if (Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
+            {
+                conversationPartner = mustard;
+            }
+            else if (Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
+            {
+                conversationPartner = peacock;
+            }
+
+            switch (keyword)
+            {
+                case "knife":
+                    if (weaponFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My knife... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that knife before in my life.";
+                        }
+                    }
+                    break;
+
+                case "wrench":
+                    if (weaponFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My wrench... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that wrench before in my life.";
+                        }
+                    }
+                    break;
+
+                case "hammer":
+                    if (weaponFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My wrench... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that wrench before in my life.";
+                        }
+                    }
+                    break;
+
+                case "book":
+                    if (clueFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My book... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that book before in my life.";
+                        }
+                    }
+                    break;
+
+                case "lighter":
+                    if (clueFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My lighter... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that lighter before in my life.";
+                        }
+                    }
+                    break;
+
+                case "glove:":
+                    if (clueFound)
+                    {
+                        if (murderer == conversationPartner)
+                        {
+                            shellText.text = "Hey! My glove... I've been looking everywhere for that.";
+                        }
+                        else
+                        {
+                            shellText.text = "I've never seen that glove before in my life.";
+                        }
+                    }
+                    break;
+
+                case "accuse":
+                    Accuse(conversationPartner);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void Accuse(GameObject suspect)
+    {
+        if (suspect == murderer)
+        {
+            playerGuess = true;
+        }
 
         if (playerGuess)
         {

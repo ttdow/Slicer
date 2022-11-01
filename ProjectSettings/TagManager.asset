@@ -10,6 +10,7 @@ TagManager:
   - mustard
   - weapon
   - clue
+  - manager
   layers:
   - Default
   - TransparentFX
