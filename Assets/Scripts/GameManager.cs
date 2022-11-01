@@ -5,7 +5,7 @@ using TMPro;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using UnityEngine.UIElements;
 
-public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedRealityTouchHandler
+public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 {
     #region Fields
 
@@ -117,24 +117,6 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
 
     #endregion
 
-    #region TouchHandler Callbacks
-    public void OnTouchStarted(HandTrackingInputEventData eventData)
-    {
-        Debug.Log("Touched!");
-    }
-
-    public void OnTouchCompleted(HandTrackingInputEventData eventData)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnTouchUpdated(HandTrackingInputEventData eventData)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    #endregion
-
     #region Unity Callbacks
 
     // Start is called before the first frame update
@@ -191,6 +173,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
 
     #region Methods
 
+    // Prompts the player to look around to ensure enough spatial mesh is available for the game objects
     public void SetupGame()
     {
         shellText.text = "The game will start shortly. Please move around and look at your surroundings to build a spatial mesh.";
@@ -202,9 +185,17 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
     public void StartGame()
     {
         shellInput.SetActive(true);
+        body.GetComponent<Rigidbody>().useGravity = false;
+        white.GetComponent<Rigidbody>().useGravity = false;
+        mustard.GetComponent<Rigidbody>().useGravity = false;
+        peacock.GetComponent<Rigidbody>().useGravity = false;
+        clue.GetComponent<Rigidbody>().useGravity = false;
+        weapon.GetComponent<Rigidbody>().useGravity = false;
+
         shellText.text = "In the year 3022 SOCIETY has moved beyond the physical world and into the cloud. People live as immortals in the digital world with nothing to fear. You are part of the Slicers, cybersecurity experts who investigate crimes in this world. For the first time in the history of your organization you've been tasked with solving a murder. Not only did someone murder this individual, but every copy of them on the network. Who could have perpetrated this heinous crime? Question the suspects, search your area for clues, and find the killer!";
     }
 
+    // Spawns a random assortment of objects into the scene
     public void SpawnRandomCase()
     {
         // Pick random suspect, weapon, clue
@@ -272,6 +263,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // Checks if the objects have been placed successfully
     public bool CheckReady()
     {
         // Detect when all the objects in the scene stop moving
@@ -282,6 +274,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
                      weapon.GetComponent<Rigidbody>().velocity +
                      clue.GetComponent<Rigidbody>().velocity;
 
+        // If all the objects are stationary, return true
         if (totalV.magnitude < 1.0f)
         {
             return true;
@@ -292,6 +285,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // TODO not implemented
     public void HideObjects()
     {
         Vector3 totalV = Vector3.zero;
@@ -329,10 +323,9 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // Called if an object is interacted with
     public void ObjectFound(string tag)
     {
-        Debug.Log("A " + tag + " was found!");
-
         switch(tag)
         {
             case "weapon":
@@ -364,6 +357,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // Start a conversation with an NPC
     public void SayHello()
     {
         string name = "";
@@ -401,12 +395,14 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // Called if text is submitted in an interrogation window
     public void QuestionSuspect()
     {
         string keyword = shellInputText.text;
         QuestionSuspect(keyword);
     }
 
+    // Controls the logic behind asking suspects about objects
     public void QuestionSuspect(string keyword)
     {
         if (conversationStarted)
@@ -461,11 +457,11 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
                     {
                         if (murderer == conversationPartner)
                         {
-                            shellText.text = "Hey! My wrench... I've been looking everywhere for that.";
+                            shellText.text = "Hey! My hammer... I've been looking everywhere for that.";
                         }
                         else
                         {
-                            shellText.text = "I've never seen that wrench before in my life.";
+                            shellText.text = "I've never seen that hammer before in my life.";
                         }
                     }
                     break;
@@ -522,6 +518,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler, IMixedReal
         }
     }
 
+    // Accuses the suspect being interrogated
     public void Accuse(GameObject suspect)
     {
         if (suspect == murderer)
