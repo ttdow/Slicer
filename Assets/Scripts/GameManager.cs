@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     private int gameState;
 
     public AudioSource audioSource;
+    public AudioClip victory;
 
     public Camera player;
 
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     public bool clueFound;
     public bool conversationStarted;
     public bool playerGuess;
+    public bool caseClosed;
 
     public GameObject murderer;
     public GameObject weapon;
@@ -110,6 +112,17 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 if (clueFound && weaponFound) QuestionSuspect("accuse");
                 break;
 
+            case "replay":
+                gameState = 0;
+                audioSource.Play();
+                SetupGame();
+                break;
+
+            case "marco":
+                if (!clueFound) clue.GetComponent<AudioSource>().Play();
+                else if (!weaponFound) weapon.GetComponent<AudioSource>().Play();
+                break;
+
             default:
                 break;
         }
@@ -130,11 +143,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         // Set the initial game state
         gameState = 0;
-        weaponFound = false;
-        clueFound = false;
-        conversationStarted = false;
-        playerGuess = false;
-
+        
         SetupGame();
     }
 
@@ -159,7 +168,10 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
             case 2:
                 audioSource.Stop();
-                Debug.Log("YOU WIN!");
+                audioSource.PlayOneShot(victory);
+                shellText.text = "Congratulations! You solved the case.\n\n";
+                shellText.text += "Type or say REPLAY to play again.";
+                caseClosed = true;
                 break;
         }
 
@@ -186,6 +198,13 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     // Prompts the player to look around to ensure enough spatial mesh is available for the game objects
     public void SetupGame()
     {
+        // Set initial game state
+        weaponFound = false;
+        clueFound = false;
+        conversationStarted = false;
+        playerGuess = false;
+        caseClosed = false;
+
         shellText.text = "The game will start shortly. Please move around and look at your surroundings to build a spatial mesh.";
         shellInput.SetActive(false);
 
