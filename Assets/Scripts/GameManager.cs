@@ -401,7 +401,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         if (conversationStarted)
         {
             shell.SetActive(true);
-            shell.transform.position = player.transform.rotation.(player.transform.position + partner.transform.position) / 2.0f;
+            shell.transform.position = (player.transform.position + partner.transform.position) / 2.0f;
 
             shellText.text = "Hello, I'm " + name + ".\n";
             shellText.text += "What do you want officer?\n";
