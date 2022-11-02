@@ -164,6 +164,12 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
             case 1:
                 // BUSINESS AS USUAL
+                body.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                mustard.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                white.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                peacock.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                clue.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 break;
 
             case 2:
@@ -214,12 +220,6 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     public void StartGame()
     {
         shellInput.SetActive(true);
-        //body.GetComponent<Rigidbody>().useGravity = false;
-        //white.GetComponent<Rigidbody>().useGravity = false;
-        //mustard.GetComponent<Rigidbody>().useGravity = false;
-        //peacock.GetComponent<Rigidbody>().useGravity = false;
-        //clue.GetComponent<Rigidbody>().useGravity = false;
-        //weapon.GetComponent<Rigidbody>().useGravity = false;
 
         shellText.text = "In the year 3022 SOCIETY has moved beyond the physical world and into the cloud. People live as immortals in the digital world with nothing to fear. You are part of the Slicers, cybersecurity experts who investigate crimes in this world. For the first time in the history of your organization you've been tasked with solving a murder. Not only did someone murder this individual, but every copy of them on the network. Who could have perpetrated this heinous crime? Question the suspects, search your area for clues, and find the killer!";
     }
@@ -233,12 +233,12 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         int clueChoice = Random.Range(0, 2);
 
         // Randomly place objects in the scene
-        Vector3 bodyPos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
-        Vector3 whitePos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
-        Vector3 mustardPos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
-        Vector3 peacockPos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
-        Vector3 weaponPos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
-        Vector3 cluePos = new Vector3(Random.Range(-9.0f, 9.0f), Random.Range(1.0f, 2.0f), Random.Range(-9.0f, 9.0f));
+        Vector3 bodyPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 whitePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 mustardPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 peacockPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 weaponPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 cluePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
 
         // Create the avatars
         body = GameObject.Instantiate(bodyPrefab, bodyPos, Quaternion.identity);
@@ -295,16 +295,69 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     // Checks if the objects have been placed successfully
     public bool CheckReady()
     {
-        // Detect when all the objects in the scene stop moving
+        GameObject obj = body;
+
+        if (obj.transform.position.y < 0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
+        obj = mustard;
+
+        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
+        obj = white;
+
+        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
+        obj = peacock;
+
+        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
+        obj = weapon;
+
+        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
+        obj = clue;
+
+        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        {
+            obj.GetComponent<Rigidbody>().useGravity = false;
+            obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        }
+
         Vector3 totalV = body.GetComponent<Rigidbody>().velocity +
-                     white.GetComponent<Rigidbody>().velocity +
-                     mustard.GetComponent<Rigidbody>().velocity +
-                     peacock.GetComponent<Rigidbody>().velocity +
-                     weapon.GetComponent<Rigidbody>().velocity +
-                     clue.GetComponent<Rigidbody>().velocity;
+                         mustard.GetComponent<Rigidbody>().velocity +
+                         white.GetComponent<Rigidbody>().velocity +
+                         peacock.GetComponent<Rigidbody>().velocity +
+                         weapon.GetComponent<Rigidbody>().velocity +
+                         clue.GetComponent<Rigidbody>().velocity;
 
         // If all the objects are stationary, return true
-        if (totalV.magnitude < 1.0f)
+        if (totalV.magnitude < 0.5f)
         {
             return true;
         }
