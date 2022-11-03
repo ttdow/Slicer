@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     private int gameState;
 
     public AudioSource audioSource;
+    public AudioClip bgMusic;
     public AudioClip victory;
 
     public Camera player;
@@ -115,6 +116,13 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
             case "replay":
                 gameState = 0;
+                Destroy(body);
+                Destroy(mustard);
+                Destroy(white);
+                Destroy(peacock);
+                Destroy(clue);
+                Destroy(weapon);
+                audioSource.Stop();
                 audioSource.Play();
                 SetupGame();
                 break;
@@ -174,7 +182,8 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
             case 2:
                 audioSource.Stop();
-                audioSource.PlayOneShot(victory);
+                audioSource.clip = victory;
+                audioSource.Play();
                 shellText.text = "Congratulations! You solved the case.\n\n";
                 shellText.text += "Type or say REPLAY to play again.";
                 caseClosed = true;
@@ -203,6 +212,11 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         conversationStarted = false;
         playerGuess = false;
         caseClosed = false;
+
+        // Prepare audio
+        audioSource.Stop();
+        audioSource.clip = bgMusic;
+        audioSource.Play();
 
         shellText.text = "The game will start shortly. Please move around and look at your surroundings to build a spatial mesh.";
         shell.GetComponent<FollowMeToggle>().ToggleFollowMeBehavior();
@@ -459,15 +473,15 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         {
             GameObject conversationPartner = null;
 
-            if (Vector3.Distance(player.transform.position, white.transform.position) < 2.0f)
+            if (Vector3.Distance(player.transform.position, white.transform.position) < 1.0f)
             {
                 conversationPartner = white;
             }
-            else if (Vector3.Distance(player.transform.position, mustard.transform.position) < 2.0f)
+            else if (Vector3.Distance(player.transform.position, mustard.transform.position) < 1.0f)
             {
                 conversationPartner = mustard;
             }
-            else if (Vector3.Distance(player.transform.position, peacock.transform.position) < 2.0f)
+            else if (Vector3.Distance(player.transform.position, peacock.transform.position) < 1.0f)
             {
                 conversationPartner = peacock;
             }
