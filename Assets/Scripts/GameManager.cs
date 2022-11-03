@@ -4,6 +4,7 @@ using Microsoft.MixedReality.Toolkit;
 using TMPro;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using UnityEngine.UIElements;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 {
@@ -156,20 +157,19 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 // SETUP THE SCENE
                 if (CheckReady())
                 {
-                    gameState = 1;
-
                     StartGame();
+
+                    body.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    mustard.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    white.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    peacock.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    weapon.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    clue.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
                 }
                 break;
 
             case 1:
                 // BUSINESS AS USUAL
-                body.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                mustard.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                white.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                peacock.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                clue.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                weapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 break;
 
             case 2:
@@ -183,13 +183,6 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         if (conversationStarted)
         {
-            if (Vector3.Distance(player.transform.position, white.transform.position) > 2.0f ||
-                Vector3.Distance(player.transform.position, mustard.transform.position) > 2.0f ||
-                Vector3.Distance(player.transform.position, peacock.transform.position) > 2.0f)
-            {
-                shell.SetActive(false);
-            }
-
             if (!shell.activeInHierarchy)
             {
                 conversationStarted = false;
@@ -212,16 +205,10 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         caseClosed = false;
 
         shellText.text = "The game will start shortly. Please move around and look at your surroundings to build a spatial mesh.";
+        shell.GetComponent<FollowMeToggle>().ToggleFollowMeBehavior();
         shellInput.SetActive(false);
 
         SpawnRandomCase();
-    }
-
-    public void StartGame()
-    {
-        shellInput.SetActive(true);
-
-        shellText.text = "In the year 3022 SOCIETY has moved beyond the physical world and into the cloud. People live as immortals in the digital world with nothing to fear. You are part of the Slicers, cybersecurity experts who investigate crimes in this world. For the first time in the history of your organization you've been tasked with solving a murder. Not only did someone murder this individual, but every copy of them on the network. Who could have perpetrated this heinous crime? Question the suspects, search your area for clues, and find the killer!";
     }
 
     // Spawns a random assortment of objects into the scene
@@ -233,12 +220,12 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         int clueChoice = Random.Range(0, 2);
 
         // Randomly place objects in the scene
-        Vector3 bodyPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
-        Vector3 whitePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
-        Vector3 mustardPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
-        Vector3 peacockPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
-        Vector3 weaponPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
-        Vector3 cluePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-0.1f, 0.1f), Random.Range(-5.0f, 5.0f));
+        Vector3 bodyPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
+        Vector3 whitePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
+        Vector3 mustardPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
+        Vector3 peacockPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
+        Vector3 weaponPos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
+        Vector3 cluePos = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(0.1f, 0.2f), Random.Range(-5.0f, 5.0f));
 
         // Create the avatars
         body = GameObject.Instantiate(bodyPrefab, bodyPos, Quaternion.identity);
@@ -297,7 +284,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     {
         GameObject obj = body;
 
-        if (obj.transform.position.y < 0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -306,7 +293,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         obj = mustard;
 
-        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -315,7 +302,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         obj = white;
 
-        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -324,7 +311,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         obj = peacock;
 
-        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -333,7 +320,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         obj = weapon;
 
-        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -342,7 +329,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
 
         obj = clue;
 
-        if (obj.transform.position.y < 0.5f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.5f)
+        if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -357,7 +344,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                          clue.GetComponent<Rigidbody>().velocity;
 
         // If all the objects are stationary, return true
-        if (totalV.magnitude < 0.5f)
+        if (totalV.magnitude < 0.1f)
         {
             return true;
         }
@@ -367,42 +354,17 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         }
     }
 
-    // TODO not implemented
-    public void HideObjects()
+    public void StartGame()
     {
-        Vector3 totalV = Vector3.zero;
+        shellInput.SetActive(true);
+        gameState = 1;
 
-        do
-        {
-            totalV = weapon.GetComponent<Rigidbody>().velocity +
-                     clue.GetComponent<Rigidbody>().velocity;
-
-        } while (totalV.magnitude < 1.0f);
-
-        int dir = Random.Range(0, 8);
-
-        // Hide weapon
-        switch (dir)
-        {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
-        }
+        shellText.text = "In the year 3022 SOCIETY has moved beyond the physical world and into the cloud. ";
+        shellText.text += "People live as near immortals in the digital world with nothing to fear. ";
+        shellText.text += "You are part of the Slicers, cybersecurity experts who investigate crimes in this world. ";
+        shellText.text += "For the first time in the history of your organization you've been tasked with solving a murder. ";
+        shellText.text += "Not only did someone murder this individual, but every copy of them on the network. ";
+        shellText.text += "Who could have perpetrated this heinous crime? Question the suspects, search your area for clues, and find the killer!";
     }
 
     // Called if an object is interacted with
@@ -470,7 +432,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             }
         }
 
-        if (conversationStarted)
+        if (conversationStarted && partner != null)
         {
             shell.SetActive(true);
             shell.transform.position = (player.transform.position + partner.transform.position) / 2.0f;
