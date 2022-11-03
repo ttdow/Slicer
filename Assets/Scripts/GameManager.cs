@@ -555,7 +555,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     // Controls the logic behind asking suspects about objects
     public void QuestionSuspect(string keyword)
     {
-        keyword.ToLower();
+        keyword = keyword.ToLower();
 
         if (conversationStarted)
         {
