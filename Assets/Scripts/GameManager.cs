@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     private int gameState;
 
     public AudioSource audioSource;
+    public AudioSource bgSource;
     public AudioClip bgMusic;
     public AudioClip victory;
 
@@ -60,11 +61,11 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         switch(eventData.Command.Keyword.ToLower())
         {
             case "stop music":
-                audioSource.Stop();
+                //bgSource.Stop();
                 break;
 
             case "play music":
-                audioSource.Play();
+                //bgSource.Play();
                 break;
 
             case "command":
@@ -122,8 +123,9 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 Destroy(peacock);
                 Destroy(clue);
                 Destroy(weapon);
-                audioSource.Stop();
-                audioSource.Play();
+                murderer = null;
+                weapon = null;
+                clue = null;
                 SetupGame();
                 break;
 
@@ -148,11 +150,19 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         CoreServices.InputSystem?.RegisterHandler<IMixedRealitySpeechHandler>(this);
 
         // Get the BG music audio source
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
+        //bgSource = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
+
+        //if (bgSource == null)
+        //{
+          //  Debug.Log("bgSource is null.");
+        //}
 
         // Set the initial game state
         gameState = 0;
-        
+
+        shell.GetComponent<FollowMeToggle>().ToggleFollowMeBehavior();
+
         SetupGame();
     }
 
@@ -181,13 +191,84 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                 break;
 
             case 2:
-                audioSource.Stop();
-                audioSource.clip = victory;
-                audioSource.Play();
+                //bgSource.Stop();
+                //bgSource.clip = victory;
+                //bgSource.Play();
                 shellText.text = "Congratulations! You solved the case.\n\n";
                 shellText.text += "Type or say REPLAY to play again.";
                 caseClosed = true;
                 break;
+        }
+
+        if (gameState == 0)
+        {
+            if (body.transform.position.y > 0.5f)
+            {
+                body.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                body.GetComponent<CapsuleCollider>().enabled = true;
+            }
+
+            if (mustard.transform.position.y > 0.5f)
+            {
+                mustard.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                mustard.GetComponent<CapsuleCollider>().enabled = true;
+            }
+
+            if (white.transform.position.y > 0.5f)
+            {
+                white.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                white.GetComponent<CapsuleCollider>().enabled = true;
+            }
+
+            if (peacock.transform.position.y > 0.5f)
+            {
+                peacock.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                peacock.GetComponent<CapsuleCollider>().enabled = true;
+            }
+
+            if (clue.transform.position.y > 0.5f)
+            {
+                if (clue.GetComponent<CapsuleCollider>() != null)
+                {
+                    clue.GetComponent<CapsuleCollider>().enabled = false;
+                }
+                else
+                {
+                    clue.GetComponent<BoxCollider>().enabled = false;
+                }
+            }
+            else
+            {
+                if (clue.GetComponent<CapsuleCollider>() != null)
+                {
+                    clue.GetComponent<CapsuleCollider>().enabled = true;
+                }
+                else
+                {
+                    clue.GetComponent<BoxCollider>().enabled = true;
+                }
+            }
+
+            if (weapon.transform.position.y > 0.5f)
+            {
+                weapon.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                weapon.GetComponent<CapsuleCollider>().enabled = true;
+            }
         }
 
         if (conversationStarted)
@@ -214,12 +295,12 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         caseClosed = false;
 
         // Prepare audio
-        audioSource.Stop();
-        audioSource.clip = bgMusic;
-        audioSource.Play();
+        //audioSource.Play();
+        //bgSource = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<AudioSource>();
+        //bgSource.clip = bgMusic;
+        //bgSource.Play();
 
         shellText.text = "The game will start shortly. Please move around and look at your surroundings to build a spatial mesh.";
-        shell.GetComponent<FollowMeToggle>().ToggleFollowMeBehavior();
         shellInput.SetActive(false);
 
         SpawnRandomCase();
@@ -247,7 +328,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
         mustard = GameObject.Instantiate(mustardPrefab, mustardPos, Quaternion.identity);
         peacock = GameObject.Instantiate(peacockPrefab, peacockPos, Quaternion.identity);
 
-        // Mr. Body is dead.
+        // Mr. Body is dead; he should not be standing up
         body.transform.Rotate(new Vector3(-90.0f, 0.0f, 0.0f));
 
         // Select whodunnit
@@ -297,12 +378,14 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
     public bool CheckReady()
     {
         GameObject obj = body;
+        int counter = 0;
 
         if (obj.transform.position.y < -0.1f && obj.GetComponent<Rigidbody>().velocity.magnitude < 0.1f)
         {
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         obj = mustard;
@@ -312,6 +395,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         obj = white;
@@ -321,6 +405,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         obj = peacock;
@@ -330,6 +415,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         obj = weapon;
@@ -339,6 +425,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         obj = clue;
@@ -348,6 +435,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
             obj.GetComponent<Rigidbody>().useGravity = false;
             obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
             obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            counter++;
         }
 
         Vector3 totalV = body.GetComponent<Rigidbody>().velocity +
@@ -358,7 +446,7 @@ public class GameManager : MonoBehaviour, IMixedRealitySpeechHandler
                          clue.GetComponent<Rigidbody>().velocity;
 
         // If all the objects are stationary, return true
-        if (totalV.magnitude < 0.1f)
+        if (totalV.magnitude < 0.1f && counter > 5)
         {
             return true;
         }

@@ -147,6 +147,10 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: -1526929014862346442, guid: 644e5a8efad11c04e89bf89767e7b39d, type: 2}
+  - {fileID: -5717433509385269048, guid: 846d4dda04153114f93f8ea0161f29e8, type: 2}
+  - {fileID: 0}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -625,7 +629,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Template_3D
-  metroPackageVersion: 1.0.9.0
+  metroPackageVersion: 1.0.10.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
